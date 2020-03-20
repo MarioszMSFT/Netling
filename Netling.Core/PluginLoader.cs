@@ -26,20 +26,24 @@ namespace Netling.Core
 
             foreach (FileInfo file in dir.GetFiles("*.dll"))
             {
-                Assembly assembly = Assembly.LoadFrom(file.FullName);
-                foreach (Type type in assembly.GetTypes())
+                try
                 {
-                    if (typeof(IWorkerJob).IsAssignableFrom(type) && type.IsAbstract == false)
+                    Assembly assembly = Assembly.LoadFrom(file.FullName);
+                    foreach (Type type in assembly.GetTypes())
                     {
-                        PluginInfo info = new PluginInfo
+                        if (typeof(IWorkerJob).IsAssignableFrom(type) && type.IsAbstract == false)
                         {
-                            AssemblyShort = file.Name,
-                            AssemblyName = file.FullName,
-                            TypeName = type.Name,
-                        };
+                            PluginInfo info = new PluginInfo
+                            {
+                                AssemblyShort = file.Name, AssemblyName = file.FullName, TypeName = type.Name,
+                            };
 
-                        plugins.Add(info);
+                            plugins.Add(info);
+                        }
                     }
+                }
+                catch (Exception)
+                {
                 }
             }
 
